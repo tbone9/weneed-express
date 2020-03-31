@@ -6,7 +6,7 @@ const Post = require('../models/Post');
 router.get('/', async (req, res, next) => {
     try {
         const posts = await Post.find();
-        return res.status(200).json({
+        return res.json({
             success: true,
             count: posts.length,
             data: posts
