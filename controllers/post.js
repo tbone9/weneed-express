@@ -1,16 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
+const verifyToken = require('./verifyToken');
+const jwt = require('jsonwebtoken');
 // GET all posts
 // route - GET /api/v1/post
-router.get('/', async (req, res, next) => {
+router.get('/', verifyToken, async (req, res, next) => {
+    
     try {
-        const posts = await Post.find();
-        return res.json({
-            success: true,
-            count: posts.length,
-            data: posts
-        });
+        const decoded = await jwt.verify(req.token, process.env.TOKEN_SECRET);
+        if(decoded){
+            const posts = await Post.find();
+            return res.json({
+                success: true,
+                count: posts.length,
+                data: posts
+            });
+        } else {
+            res.sendStatus(400)
+        }
+        
     } catch (error) {
         return res.send(500).json({
             success: false,

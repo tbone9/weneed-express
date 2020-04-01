@@ -4,6 +4,7 @@ const app = express();
 const dotenv = require('dotenv');
 const colors = require('colors');
 const morgan = require('morgan');
+const jwt = require('jsonwebtoken');
 const connectDB = require('./config/db');
 
 app.use(cors());
@@ -25,6 +26,8 @@ app.use('/post', postController);
 
 const authController = require('./controllers/auth');
 app.use('/user', authController);
+const testController = require('./controllers/test');
+app.use('/test', testController);
 
 //PORT CONNECTION
 const PORT = process.env.PORT || 5000;

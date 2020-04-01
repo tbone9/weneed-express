@@ -1,8 +1,9 @@
 // const express = require('express');
 const router = require('express').Router();
 const User = require('../models/User');
-const {registerValidation} = require('../validation');
+const {registerValidation, loginValidation} = require('../validation');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // REGISTER NEW USER
 router.post('/register', async(req, res) => {
@@ -29,7 +30,8 @@ router.post('/register', async(req, res) => {
             state: req.body.state
         });
         const savedUser = await user.save();
-        return res.send(201).json({
+        res.send({ user: user._id });
+        return res.status(201).json({
             success: true,
             data: savedUser
     });
@@ -50,8 +52,35 @@ router.post('/register', async(req, res) => {
 });
 
 //LOGIN USER
-router.post('/login', (req, res) => {
-    res.send('login');
-})
+router.post('/login', async (req, res) => {
+    try {
+        const { error } = loginValidation(req.body);
+        if(error) return res.status(400).send(error.details[0].message);
+    
+        // checking if email exists
+        const user = await User.findOne({email: req.body.email});
+            if(!user) return res.status(400).send('Email or password is WRONG!');
+        
+        //Check password
+        const validPassword = await bcrypt.compare(req.body.password, user.password);
+        if(!validPassword) return res.status(400).send('Email or password is WRONG!');
+
+        // Create and assign JWT
+        jwt.sign({user}, process.env.TOKEN_SECRET, {expiresIn: '1h'}, (err, token)=> {
+            res.json({
+                token
+            });
+        });
+            
+    
+        // res.send('Logged in!');
+        
+    } catch (error) {
+        res.send(error);
+    }
+    // Validate login information
+});
+
+
 
 module.exports = router;
