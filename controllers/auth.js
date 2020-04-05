@@ -30,8 +30,9 @@ router.post('/register', async(req, res) => {
             state: req.body.state
         });
         const savedUser = await user.save();
-        res.send({ user: user._id });
-        return res.status(201).json({
+        // res.send({ user: user._id });
+        return res.send(201).json({
+            code: 201,
             success: true,
             data: savedUser
     });

@@ -24,6 +24,9 @@ app.use(express.json());
 const postController = require('./controllers/post');
 app.use('/post', postController);
 
+const groupController = require('./controllers/group');
+app.use('/group', groupController);
+
 const authController = require('./controllers/auth');
 app.use('/user', authController);
 const testController = require('./controllers/test');

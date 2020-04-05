@@ -1,24 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
+const Group = require('../models/Group');
 const verifyToken = require('./verifyToken');
 const jwt = require('jsonwebtoken');
 // GET all posts
 // route - GET /api/v1/post
-router.get('/', verifyToken, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
     
     try {
-        const decoded = await jwt.verify(req.token, process.env.TOKEN_SECRET);
-        if(decoded){
+        // const decoded = await jwt.verify(req.token, process.env.TOKEN_SECRET);
+        // if(decoded){
             const posts = await Post.find();
             return res.json({
                 success: true,
                 count: posts.length,
                 data: posts
             });
-        } else {
-            res.sendStatus(400)
-        }
+        // } else {
+        //     res.sendStatus(400)
+        // }
         
     } catch (error) {
         return res.send(500).json({
@@ -64,11 +65,14 @@ router.put('/:id', async (req, res, next) => {
 })
 
 // POST a post
-// route - GET /api/v1/post
 router.post('/', async (req, res, next) => {
     try {
         const { title, description, postType, category } = req.body;
+        const group = await Group.findOne({_id: req.body.group_id});
+        console.log(group, '<=== group');
         const post = await Post.create(req.body);
+        await group.posts.push(post);
+        await group.save();
         return res.status(201).json({
             success: true,
             data: post
