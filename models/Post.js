@@ -20,7 +20,10 @@ const PostSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true
-    }, 
+    },
+    groupId: {
+        type: String
+    },
     resolved: {
         type: Boolean,
         default: false

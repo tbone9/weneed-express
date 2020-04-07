@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
         min: 6,
         max: 255
     },
@@ -24,11 +25,9 @@ const UserSchema = new mongoose.Schema({
     },
     city: {
         type: String,
-        required: true,
     },
     state: {
         type: String,
-        required: true
     },
     messagesSent: [{
         type: mongoose.Schema.Types.ObjectId,

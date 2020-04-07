@@ -7,23 +7,25 @@ const jwt = require('jsonwebtoken');
 
 router.get('/', async (req, res, next) => {
     try {
-        const allGroups = await Group.find();
+        const groups = await Group.find();
         return res.json({
             success: true,
-            count: posts.length,
+            count: groups.length,
             data: groups
         });
     } catch (error) {
-        return res.send(500).json({
+        return res.sendStatus(500).json({
             success: false,
             error: 'Server Error'
         });
     }
 });
 
+
+
 router.get('/:id', function(req, res) {
     Group.findById({ _id: req.params.id })
-        .populate("posts")
+        // .populate("posts")
         .then(function(group) {
             res.json(group);
         })

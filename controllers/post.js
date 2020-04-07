@@ -29,6 +29,23 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+//Get posts for one group
+router.get('/groupPosts/:groupId', async (req, res) => {
+    try {
+        const posts = await Post.find({groupId: req.params.groupId});
+        return res.json({
+            success: true,
+            data: posts
+        });
+        
+    } catch (error) {
+        return res.send(500).json({
+            success: false,
+            error: 'Server Error'
+        });
+    }
+})
+
 // GET one post
 
 router.get('/:id', async (req, res, next) => {
