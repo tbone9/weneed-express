@@ -22,29 +22,29 @@ router.get('/', async (req, res, next) => {
 });
 
 
-
-router.get('/:id', function(req, res) {
+//GET one group
+router.get('/:id', function (req, res) {
     Group.findById({ _id: req.params.id })
         // .populate("posts")
-        .then(function(group) {
+        .then(function (group) {
             res.json(group);
         })
-        .catch(function(err) {
+        .catch(function (err) {
             console.log(err)
             res.json(err);
         });
 });
 
 // Creates a post and adds it to the group
-router.post('/:id', function(req,res) {
+router.post('/:id', function (req, res) {
     Post.create(req.body)
-        .then(function(post) {
-            return Group.findOneAndUpdate({ _id: req.params.id }, {$push: {posts: post._id}}, { new: true });
+        .then(function (post) {
+            return Group.findOneAndUpdate({ _id: req.params.id }, { $push: { posts: post._id } }, { new: true });
         })
-        .then(function(group) {
+        .then(function (group) {
             res.json(group);
         })
-        .catch(function(err) {
+        .catch(function (err) {
             res.json(err);
         });
 });
@@ -56,9 +56,9 @@ router.post('/', async (req, res) => {
         return res.status(201).json({
             success: true,
             data: group
-    });
+        });
     } catch (error) {
-        if(error.name === 'ValidationError') {
+        if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(val => val.message);
             return res.status(400).json({
                 success: false,
